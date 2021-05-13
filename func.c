@@ -95,13 +95,14 @@ kvad_node* createRoot () {
     int n;
     printf("Enter the size of the tree: ");
     getInt(&n);
+    k->prev = NULL;
     k->size = count_degree(n);
     k->key.x = k->size / 2;
     k->key.y = k->size / 2;
     return k;
 }
 
-element* findElem(kvad_node* root, point p) {
+kvad_node* findElem(kvad_node* root, point p) {
     int x = p.x, y = p.y;
     kvad_node *tmp = root;
     while (tmp) {
@@ -114,7 +115,7 @@ element* findElem(kvad_node* root, point p) {
             }
             else if (tmp->child[0] == NULL && tmp->elems[0] != NULL) {
                 if (tmp->elems[0]->key.x == x && tmp->elems[0]->key.y == y) {
-                    return tmp->elems[0];
+                    return tmp;
                 }
                 else {
                     return NULL;
@@ -130,7 +131,7 @@ element* findElem(kvad_node* root, point p) {
             }
             else if (tmp->child[1] == NULL && tmp->elems[1] != NULL) {
                 if (tmp->elems[1]->key.x == x && tmp->elems[1]->key.y == y) {
-                    return tmp->elems[1];
+                    return tmp;
                 }
                 else {
                     return NULL;
@@ -146,7 +147,7 @@ element* findElem(kvad_node* root, point p) {
             }
             else if (tmp->child[2] == NULL && tmp->elems[2] != NULL) {
                 if (tmp->elems[2]->key.x == x && tmp->elems[2]->key.y == y) {
-                    return tmp->elems[2];
+                    return tmp;
                 }
                 else {
                     return NULL;
@@ -162,7 +163,7 @@ element* findElem(kvad_node* root, point p) {
             }
             else if (tmp->child[3] == NULL && tmp->elems[3] != NULL) {
                 if (tmp->elems[3]->key.x == x && tmp->elems[3]->key.y == y) {
-                    return tmp->elems[3];
+                    return tmp;
                 }
                 else {
                     return NULL;
@@ -173,20 +174,22 @@ element* findElem(kvad_node* root, point p) {
 }
 
 void getKey(kvad_node *root) {
+    int pos = 0;
     point p;
     printf("Enter the first key: ");
     getInt(&(p.x));
     printf("Enter the second key: ");
     getInt(&(p.y));
-    element* find = findElem(root, p);
+    kvad_node* find = findElem(root, p);
     if (find == NULL) {
         printf("That key does not exist!\n");
         free(find);
         return;
     }
     else {
-        printf("Coords: x: %d, y: %d\n", find->key.x, find->key.y);
-        printf("Info: %s\n", find->info);
+        pos = getPos(find->key, p);
+        printf("Coords: x: %d, y: %d\n", find->elems[pos]->key.x, find->elems[pos]->key.y);
+        printf("Info: %s\n", find->elems[pos]->info);
     }
 }
 
@@ -255,16 +258,17 @@ void printTree(kvad_node *root, char *name, int lvl) {
 }
 
 int addElem(kvad_node **root, point key, char* Info) {
-    int x = key.x, y = key.y, pos1, pos2;
+    int x = key.x, y = key.y, pos1, pos2, pos;
     element temporary;
     kvad_node* tmp = *root;
-    element* find = findElem(tmp, key);
+    kvad_node* find = findElem(tmp, key);
     if (find) {
         printf("The element is already in the tree!\n");
-        printf("String: %s\n", find->info);
-        free(find->info);
-        find->info = (char*)calloc(strlen(Info) + 1, sizeof(char));
-        memcpy(find->info, Info, strlen(Info) + 1);
+        pos = getPos(find->key, key);
+        printf("String: %s\n", find->elems[pos]->info);
+        free(find->elems[pos]->info);
+        find->elems[pos]->info = (char*)calloc(strlen(Info) + 1, sizeof(char));
+        memcpy(find->elems[pos]->info, Info, strlen(Info) + 1);
         return 0;
     }
      while (tmp) {
@@ -290,6 +294,7 @@ int addElem(kvad_node **root, point key, char* Info) {
                 while (pos1 != -1) {
                     printf("Center: %d %d\n", tmp->key.x, tmp->key.y);
                     tmp->child[pos1] = createNode(tmp->size, pos1, tmp->key);
+                    tmp->child[pos1]->prev = tmp;
                     if (!tmp->child[pos1]) {
                         printf("It is impossible to insert an element!\n");
                         free(temporary.info);
@@ -336,6 +341,7 @@ int addElem(kvad_node **root, point key, char* Info) {
                 pos1 = 1;
                 while (pos1 != -1) {
                     tmp->child[pos1] = createNode(tmp->size, pos1, tmp->key);
+                    tmp->child[pos1]->prev = tmp;
                     if (!tmp->child[pos1]) {
                         printf("It is impossible to insert an element!\n");
                         free(temporary.info);
@@ -382,6 +388,7 @@ int addElem(kvad_node **root, point key, char* Info) {
                 pos1 = 2;
                 while (pos1 != -1) {
                     tmp->child[pos1] = createNode(tmp->size, pos1, tmp->key);
+                    tmp->child[pos1]->prev = tmp;
                     if (!tmp->child[pos1]) {
                         printf("It is impossible to insert an element!\n");
                         free(temporary.info);
@@ -429,6 +436,7 @@ int addElem(kvad_node **root, point key, char* Info) {
                 pos1 = 3;
                 while (pos1 != -1) {
                     tmp->child[pos1] = createNode(tmp->size, pos1, tmp->key);
+                    tmp->child[pos1]->prev = tmp;
                     if (!tmp->child[pos1]) {
                         printf("It is impossible to insert an element!\n");
                         free(temporary.info);

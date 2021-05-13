@@ -21,6 +21,7 @@ typedef struct element {
 typedef struct kvad_node {
     point key;
     int size;
+    struct kvad_node *prev;
     struct kvad_node* child[4];
     element* elems[4];
 } kvad_node;

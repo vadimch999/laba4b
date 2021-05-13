@@ -28,6 +28,7 @@ typedef struct kvad_node {
 
 void getInt(int* a);
 void getKey(kvad_node *root);
+void deleteElement(kvad_node *root);
 char* getstr();
 int count_degree(int n);
 kvad_node* createRoot();

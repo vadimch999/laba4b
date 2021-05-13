@@ -22,7 +22,7 @@ int main() {
                 getKey(root);
                 break;
             case 4:
-                //   deleteNode(root);
+                deleteElement(root);
                 break;
             case 5:
                 //   nextNode(root);

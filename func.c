@@ -466,4 +466,92 @@ int addElem(kvad_node **root, point key, char* Info) {
     }
 }
 
+void deleteElement(kvad_node *root) {
+    point p, tmp;
+    int save = 0;
+    element temporary;
+    printf("Enter the first key: ");
+    getInt(&(p.x));
+    printf("Enter the second key: ");
+    getInt(&(p.y));
+    kvad_node* find = findElem(root, p);
+    if (!find) {
+        printf("That element is not in the tree!");
+        return;
+    }
+    int pos = getPos(find->key, p), cnt1 = 0, cnt2 = 0;
+    for (int i = 0; i < 4; i++) {
+        if (find->elems[i])
+            cnt1++;
+        if (find->child[i])
+            cnt2++;
+    }
+    if (cnt1 >= 3) {
+        free(find->elems[pos]->info);
+        free(find->elems[pos]);
+        find->elems[pos] = NULL;
+        return;
+    }
+    else if (cnt1 == 1 && cnt2 == 0) {
+        if (find->prev == NULL) {
+            free(find->elems[pos]->info);
+            free(find->elems[pos]);
+            find->elems[pos] = NULL;
+            return;
+        }
+        else {
+            free(find->elems[pos]->info);
+            free(find->elems[pos]);
+            tmp = find->key;
+            find = find->prev;
+            pos = getPos(find->key, tmp);
+            free(find->child[pos]);
+            find->child[pos] = NULL;
+            return;
+        }
+    }
+    else if ((cnt1 == 1 || cnt2 == 2) && cnt2 > 0) {
+        free(find->elems[pos]->info);
+        free(find->elems[pos]);
+        find->elems[pos] = NULL;
+        return;
+    }
+    else if (cnt1 == 2 && cnt2 == 0) {
+        if (find->prev == NULL) {
+            free(find->elems[pos]->info);
+            free(find->elems[pos]);
+            find->elems[pos] = NULL;
+            return;
+        }
+        else {
+         //   printf("%d\n", pos);
+            for (int i = 0; i < 4; i++) {
+                if (find->elems[i] && i != pos) {
+                    save = i;
+                    break;
+                }
+            }
+            temporary.key = find->elems[save]->key;
+            temporary.info = (char*)calloc(strlen(find->elems[save]->info) + 1, sizeof(char));
+            memcpy(temporary.info, find->elems[save]->info, strlen(find->elems[save]->info) + 1);
+            free(find->elems[save]->info);
+            free(find->elems[save]);
+            find->elems[save] = NULL;
+            free(find->elems[pos]->info);
+            free(find->elems[pos]);
+            find->elems[pos] = NULL;
+            tmp = find->key;
+            find = find->prev;
+            pos = getPos(find->key, tmp);
+         //   printf("%d\n", pos);
+            free(find->child[pos]);
+            find->child[pos] = NULL;
+            find->elems[pos] = (element*)malloc(sizeof(element));
+            find->elems[pos]->info = (char*)calloc(strlen(temporary.info) + 1, sizeof(char));
+            memcpy(find->elems[pos]->info, temporary.info, strlen(temporary.info) + 1);
+            find->elems[pos]->key = temporary.key;
+            free(temporary.info);
+        }
+    }
+}
 

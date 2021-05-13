@@ -263,9 +263,9 @@ int addElem(kvad_node **root, point key, char* Info) {
     kvad_node* tmp = *root;
     kvad_node* find = findElem(tmp, key);
     if (find) {
-        printf("The element is already in the tree!\n");
+      //  printf("The element is already in the tree!\n");
         pos = getPos(find->key, key);
-        printf("String: %s\n", find->elems[pos]->info);
+     //   printf("String: %s\n", find->elems[pos]->info);
         free(find->elems[pos]->info);
         find->elems[pos]->info = (char*)calloc(strlen(Info) + 1, sizeof(char));
         memcpy(find->elems[pos]->info, Info, strlen(Info) + 1);
@@ -292,7 +292,7 @@ int addElem(kvad_node **root, point key, char* Info) {
                 tmp->elems[0] = NULL;
                 pos1 = 0;
                 while (pos1 != -1) {
-                    printf("Center: %d %d\n", tmp->key.x, tmp->key.y);
+                 //   printf("Center: %d %d\n", tmp->key.x, tmp->key.y);
                     tmp->child[pos1] = createNode(tmp->size, pos1, tmp->key);
                     tmp->child[pos1]->prev = tmp;
                     if (!tmp->child[pos1]) {
@@ -301,10 +301,10 @@ int addElem(kvad_node **root, point key, char* Info) {
                         return 0;
                     }
                     tmp = tmp->child[pos1];
-                    printf("x: %d, y: %d\n", tmp->key.x, tmp->key.y);
+              //      printf("x: %d, y: %d\n", tmp->key.x, tmp->key.y);
                     pos1 = getPos(tmp->key, key);
                     pos2 = getPos(tmp->key, temporary.key);
-                    printf("%d, %d\n", pos1, pos2);
+              //      printf("%d, %d\n", pos1, pos2);
                     if (pos1 != pos2) {
                         tmp->elems[pos1] = (element*)calloc(1, sizeof(element));
                         tmp->elems[pos1]->key = key;
@@ -348,10 +348,10 @@ int addElem(kvad_node **root, point key, char* Info) {
                         return 0;
                     }
                     tmp = tmp->child[pos1];
-                    printf("x: %d, y: %d\n", tmp->key.x, tmp->key.y);
+            //        printf("x: %d, y: %d\n", tmp->key.x, tmp->key.y);
                     pos1 = getPos(tmp->key, key);
                     pos2 = getPos(tmp->key, temporary.key);
-                    printf("%d, %d\n", pos1, pos2);
+             //       printf("%d, %d\n", pos1, pos2);
                     if (pos1 != pos2) {
                         tmp->elems[pos1] = (element*)malloc(sizeof(element));
                         tmp->elems[pos1]->key = key;
@@ -395,10 +395,10 @@ int addElem(kvad_node **root, point key, char* Info) {
                         return 0;
                     }
                     tmp = tmp->child[pos1];
-                    printf("x: %d, y: %d\n", tmp->key.x, tmp->key.y);
+            //        printf("x: %d, y: %d\n", tmp->key.x, tmp->key.y);
                     pos1 = getPos(tmp->key, key);
                     pos2 = getPos(tmp->key, temporary.key);
-                    printf("%d, %d\n", pos1, pos2);
+            //        printf("%d, %d\n", pos1, pos2);
                     if (pos1 != pos2) {
                         tmp->elems[pos1] = (element*)malloc(sizeof(element));
                         tmp->elems[pos1]->key = key;
@@ -443,10 +443,10 @@ int addElem(kvad_node **root, point key, char* Info) {
                         return 0;
                     }
                     tmp = tmp->child[pos1];
-                    printf("x: %d, y: %d\n", tmp->key.x, tmp->key.y);
+            //        printf("x: %d, y: %d\n", tmp->key.x, tmp->key.y);
                     pos1 = getPos(tmp->key, key);
                     pos2 = getPos(tmp->key, temporary.key);
-                    printf("%d, %d\n", pos1, pos2);
+            //        printf("%d, %d\n", pos1, pos2);
                     if (pos1 != pos2) {
                         tmp->elems[pos1] = (element*)malloc(sizeof(element));
                         tmp->elems[pos1]->key = key;
@@ -589,3 +589,38 @@ int max_element(kvad_node *root, int max, point* p) {
     return max;
 }
 
+int timing_func() {
+    kvad_node *root = NULL;
+    root = createRoot();
+    int n = 10, cnt = 1000, i, m, numb;
+    point key[100], p;
+    clock_t first, last;
+    char *info;
+    info = "random_string";
+    while (n-- > 0) {
+        for (i = 0; i < 100; i++) {
+            numb = rand() % 100;
+            key[i].x = numb;
+            numb = rand() % 100;
+            key[i].y = numb;
+        }
+        for (i = 0; i < cnt; ) {
+            p.x = rand() % 1000;
+            p.y = rand() % 1000;
+            if (addElem(&root, p, info))
+                ++i;
+        }
+        m = 0;
+        first = clock();
+        for (i = 0; i < 100; i++) {
+            if (findElem(root, key[i])) {
+                m++;
+            }
+        }
+        last = clock();
+        printf("test #%d, number of nodes = %d, time = %ld\n", 10 - n, (10 - n) * cnt, last - first);
+    }
+    deleteTree(root);
+    free(root);
+    return 1;
+}

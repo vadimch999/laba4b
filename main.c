@@ -2,6 +2,7 @@
 
 int main() {
     kvad_node *root = NULL;
+    srand(time(NULL));
     root = createRoot();
     point p;
     int max = 0;
@@ -32,7 +33,7 @@ int main() {
                 printf("Max point: x: %d, y: %d \n", p.x, p.y);
                 break;
             case 6:
-                //  timing_func();
+                timing_func();
                 break;
             case 7:
                 //   load(&root);

@@ -172,6 +172,24 @@ element* findElem(kvad_node* root, point p) {
     }
 }
 
+void getKey(kvad_node *root) {
+    point p;
+    printf("Enter the first key: ");
+    getInt(&(p.x));
+    printf("Enter the second key: ");
+    getInt(&(p.y));
+    element* find = findElem(root, p);
+    if (find == NULL) {
+        printf("That key does not exist!\n");
+        free(find);
+        return;
+    }
+    else {
+        printf("Coords: x: %d, y: %d\n", find->key.x, find->key.y);
+        printf("Info: %s\n", find->info);
+    }
+}
+
 kvad_node* createNode(int n, int pos, point p) {
     if (n == 1 || n == 2) {
         return NULL;
@@ -240,8 +258,13 @@ int addElem(kvad_node **root, point key, char* Info) {
     int x = key.x, y = key.y, pos1, pos2;
     element temporary;
     kvad_node* tmp = *root;
-    if (findElem(tmp, key)) {
+    element* find = findElem(tmp, key);
+    if (find) {
         printf("The element is already in the tree!\n");
+        printf("String: %s\n", find->info);
+        free(find->info);
+        find->info = (char*)calloc(strlen(Info) + 1, sizeof(char));
+        memcpy(find->info, Info, strlen(Info) + 1);
         return 0;
     }
      while (tmp) {
@@ -368,7 +391,7 @@ int addElem(kvad_node **root, point key, char* Info) {
                     printf("x: %d, y: %d\n", tmp->key.x, tmp->key.y);
                     pos1 = getPos(tmp->key, key);
                     pos2 = getPos(tmp->key, temporary.key);
-                    printf("Putin %d, %d\n", pos1, pos2);
+                    printf("%d, %d\n", pos1, pos2);
                     if (pos1 != pos2) {
                         tmp->elems[pos1] = (element*)malloc(sizeof(element));
                         tmp->elems[pos1]->key = key;

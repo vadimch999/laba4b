@@ -19,7 +19,7 @@ int main() {
                 printTree(root, "root", 0);
                 break;
             case 3:
-                //   getKey(root);
+                getKey(root);
                 break;
             case 4:
                 //   deleteNode(root);

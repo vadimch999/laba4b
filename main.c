@@ -3,7 +3,10 @@
 int main() {
     kvad_node *root = NULL;
     srand(time(NULL));
-    root = createRoot();
+    int n;
+    printf("Enter the size of the tree: ");
+    getInt(&n);
+    root = createRoot(n);
     point p;
     int max = 0;
     int command;
@@ -33,13 +36,16 @@ int main() {
                 printf("Max point: x: %d, y: %d \n", p.x, p.y);
                 break;
             case 6:
-                timing_func();
+                timing_func(n);
                 break;
             case 7:
-                //   load(&root);
+                deleteTree(root);
+                free(root);
+                root = NULL;
+                load(&root);
                 break;
             case 8:
-                //   save(&root);
+                save(&root, n);
                 break;
             default:
                 printf("Error!\n");

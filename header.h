@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define msg "0. Quit \n1. Add \n2. Show \n3. Find \n4. Delete \n5. Max element \n6. Timing \n"
+#define msg "0. Quit \n1. Add \n2. Show \n3. Find \n4. Delete \n5. Max element \n6. Timing \n7. Load file\n8. Save file\n"
 
 typedef struct point {
     int x;
@@ -32,7 +32,7 @@ void getKey(kvad_node *root);
 void deleteElement(kvad_node *root);
 char* getstr();
 int count_degree(int n);
-kvad_node* createRoot();
+kvad_node* createRoot(int n);
 void getInfo(kvad_node** root);
 void deleteTree(kvad_node* root);
 int addElem(kvad_node** root, point key, char* Info);
@@ -40,6 +40,9 @@ kvad_node* createNode(int n, int pos, point p);
 int getPos(point p1, point p2);
 void printTree(kvad_node *root, char *name, int lvl);
 int max_element(kvad_node *root, int max, point* p);
-int timing_func();
+int timing_func(int k);
+int load(kvad_node **root);
+void save_tree(kvad_node *ptr, FILE *fd);
+int save(kvad_node **root, int n);
 
 #endif //LABA4B_HEADER_H

@@ -86,15 +86,12 @@ void deleteTree(kvad_node *root) {
     }
 }
 
-kvad_node* createRoot () {
+kvad_node* createRoot (int n) {
     kvad_node* k = (kvad_node*)malloc(sizeof(kvad_node));
     for (int i = 0; i < 4; i++) {
         k->child[i] = NULL;
         k->elems[i] = NULL;
     }
-    int n;
-    printf("Enter the size of the tree: ");
-    getInt(&n);
     k->prev = NULL;
     k->size = count_degree(n);
     k->key.x = k->size / 2;
@@ -589,9 +586,9 @@ int max_element(kvad_node *root, int max, point* p) {
     return max;
 }
 
-int timing_func() {
+int timing_func(int k) {
     kvad_node *root = NULL;
-    root = createRoot();
+    root = createRoot(k);
     int n = 10, cnt = 1000, i, m, numb;
     point key[100], p;
     clock_t first, last;
@@ -618,9 +615,58 @@ int timing_func() {
             }
         }
         last = clock();
-        printf("test #%d, number of nodes = %d, time = %ld\n", 10 - n, (10 - n) * cnt, last - first);
+        printf("test #%d, number of nodes = %d, time = %lf\n", 10 - n, (10 - n) * cnt, (double)(last - first) / CLOCKS_PER_SEC);
     }
     deleteTree(root);
     free(root);
     return 1;
+}
+
+int load(kvad_node **root) {
+    FILE* fd = fopen("Tree.txt", "r+b");
+    point* p = (point*)malloc(sizeof(point));
+    char *info;
+    int info_len, n;
+    fseek(fd, 0, SEEK_END);
+    long end = ftell(fd);
+    fseek(fd, 0, SEEK_SET);
+    fread(&n, sizeof(int), 1, fd);
+    *root = createRoot(n);
+    while (ftell(fd) != end) {
+        fread(p, sizeof(point), 1, fd);
+        fread(&info_len, sizeof(int), 1, fd);
+        info = (char*)calloc(sizeof(char), info_len);
+        fread(info, sizeof(char), info_len, fd);
+        addElem(root, *p, info);
+        free(info);
+    }
+    fclose(fd);
+    free(p);
+    return 0;
+}
+
+void save_tree(kvad_node* ptr, FILE *fd) {
+    if (ptr) {
+        for (int i = 0; i < 4; i++) {
+            if (ptr->elems[i]) {
+                unsigned int info_len = strlen(ptr->elems[i]->info) + 1;
+                fwrite(&ptr->elems[i]->key, sizeof(point), 1, fd);
+                fwrite(&info_len, sizeof(int), 1, fd);
+                fwrite(ptr->elems[i]->info, 1, info_len, fd);
+            }
+        }
+        save_tree(ptr->child[0], fd);
+        save_tree(ptr->child[1], fd);
+        save_tree(ptr->child[2], fd);
+        save_tree(ptr->child[3], fd);
+    }
+}
+
+int save(kvad_node** root, int n) {
+    FILE *fd = fopen("Tree.txt", "w+b");
+    fwrite(&n, sizeof(int), 1, fd);
+    kvad_node *ptr = *root;
+    save_tree(ptr, fd);
+    fclose(fd);
+    return 0;
 }

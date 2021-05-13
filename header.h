@@ -6,7 +6,7 @@
 #include <time.h>
 #include <string.h>
 
-#define msg "0. Quit \n1. Add \n2. Show \n3. Find \n4. Delete \n5. Find next \n6. Timing \n"
+#define msg "0. Quit \n1. Add \n2. Show \n3. Find \n4. Delete \n5. Max element \n6. Timing \n"
 
 typedef struct point {
     int x;
@@ -38,5 +38,6 @@ int addElem(kvad_node** root, point key, char* Info);
 kvad_node* createNode(int n, int pos, point p);
 int getPos(point p1, point p2);
 void printTree(kvad_node *root, char *name, int lvl);
+int max_element(kvad_node *root, int max, point* p);
 
 #endif //LABA4B_HEADER_H

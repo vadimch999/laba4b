@@ -555,3 +555,37 @@ void deleteElement(kvad_node *root) {
     }
 }
 
+int max_element(kvad_node *root, int max, point* p) {
+    int curr, save = 0;
+    for (int i = 0; i < 4; i++) {
+        if (root->elems[i]) {
+           // printf("point: x: %d, y: %d \n", root->elems[i]->key.x, root->elems[i]->key.y);
+            curr = root->elems[i]->key.x * root->elems[i]->key.x + root->elems[i]->key.y * root->elems[i]->key.y;
+            if (curr > max) {
+                max = curr;
+               // printf("point: x: %d, y: %d \n", root->elems[i]->key.x, root->elems[i]->key.y);
+                p->x = root->elems[i]->key.x;
+                p->y = root->elems[i]->key.y;
+             //   printf("Afterpoint: x: %d, y: %d \n", p.x, p.y);
+            }
+        }
+    }
+    if (root->child[0]) {
+        save = max_element(root->child[0], max, p);
+        if (save > max) max = save;
+    }
+    if (root->child[1]) {
+        save = max_element(root->child[1], max, p);
+        if (save > max) max = save;
+    }
+    if (root->child[2]) {
+        save = max_element(root->child[2], max, p);
+        if (save > max) max = save;
+    }
+    if (root->child[3]) {
+        save = max_element(root->child[3], max, p);
+        if (save > max) max = save;
+    }
+    return max;
+}
+

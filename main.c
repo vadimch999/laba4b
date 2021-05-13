@@ -3,6 +3,8 @@
 int main() {
     kvad_node *root = NULL;
     root = createRoot();
+    point p;
+    int max = 0;
     int command;
     do {
         printf("%s", msg);
@@ -25,7 +27,9 @@ int main() {
                 deleteElement(root);
                 break;
             case 5:
-                //   nextNode(root);
+                max = 0;
+                max = max_element(root, max, &p);
+                printf("Max point: x: %d, y: %d \n", p.x, p.y);
                 break;
             case 6:
                 //  timing_func();
